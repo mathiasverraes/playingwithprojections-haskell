@@ -1,6 +1,11 @@
 module Main where
 
-import           Lib
+import           EventStore
+import           Projectors
+import           System.Environment
+import           System.Exit
 
-main :: IO ()
-main = someFunc
+main = getArgs >>= cmd
+
+cmd [file] = go $ EventStore file
+cmd _      = die "\nProvide the path to the data file as an argument.\n"
