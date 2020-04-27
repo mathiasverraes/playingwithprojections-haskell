@@ -1,0 +1,3 @@
+# Playing with Projections - Haskell
+
+
