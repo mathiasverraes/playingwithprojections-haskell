@@ -1,7 +1,7 @@
 module Main where
 
 import           EventStore
-import           Projectors
+import           StartHere
 import           System.Environment
 import           System.Exit
 

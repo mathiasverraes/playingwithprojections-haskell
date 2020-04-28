@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0d29b57a20e39338a46fd77c0bd29203b09de3069f78701585ec797cbe5f933c
+-- hash: 3dd1a2508e2d2ae0c94d5479087e12b436ec5c0dda82802cda79d97fcb361ded
 
 name:           playingwithprojections
 version:        0.1.0.0
@@ -27,8 +27,12 @@ source-repository head
 
 library
   exposed-modules:
+      CountEvents
+      CountPlayers
+      CountPlayersPerMonth
       EventStore
-      Projectors
+      QuizTitles
+      StartHere
   other-modules:
       Paths_playingwithprojections
   hs-source-dirs:
@@ -36,6 +40,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , time
     , unordered-containers
   default-language: Haskell2010

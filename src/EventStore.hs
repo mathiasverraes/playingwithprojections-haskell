@@ -1,29 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module EventStore where
+module EventStore (module EventStore, (!)) where
 
 import           Data.Aeson
-import           Data.HashMap.Strict
+import           Data.HashMap.Strict (HashMap, (!))
 import           Data.Time.LocalTime
-
-newtype EventStore =
-    EventStore
-        { file :: String
-        }
-    deriving (Show, Eq)
-
-data Projector a =
-    Projector
-        { initState :: a
-        , project   :: a -> Event -> a
-        }
-
-replayInto :: EventStore -> Projector a -> IO a
-replayInto es p = do
-    result <- decodeFileStrict (file es) :: IO (Maybe [Event])
-    let events = concat result
-    let state = foldl (project p) (initState p) events
-    return state
 
 data Event =
     Event
@@ -34,6 +15,25 @@ data Event =
         }
     deriving (Show)
 
+newtype EventStore =
+    EventStore
+        { file :: String
+        }
+    deriving (Show, Eq)
+
+type State a = a
+type Projection a = (State a -> Event -> State a)
+
+stream :: EventStore -> IO [Event]
+stream es = concat <$> decodeFileStrict (file es)
+
+replay :: EventStore -> State a -> Projection a -> IO (State a)
+replay eventStore initState projection = do
+    events <- stream eventStore
+    return $ foldl projection initState events
+
 instance FromJSON Event where
     parseJSON (Object x) = Event <$> x .: "id" <*> x .: "type" <*> x .: "timestamp" <*> x .: "payload"
     parseJSON _ = fail "Expected an Object"
+
+

@@ -28,6 +28,7 @@ library:
   - aeson -any
   - unordered-containers -any
   - time -any
+  - containers -any
 
 executables:
   playingwithprojections-exe:
