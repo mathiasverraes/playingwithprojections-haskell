@@ -3,6 +3,8 @@
 module EventStore where
 
 import           Data.Aeson
+import           Data.HashMap.Strict
+import           Data.Time.LocalTime
 
 newtype EventStore =
     EventStore
@@ -25,10 +27,10 @@ replayInto es p = do
 
 data Event =
     Event
-        { id        :: String
-        , eventType :: String
-        , timestamp :: String
-        , payload   :: Object
+        { idOf        :: String
+        , typeOf      :: String
+        , timestampOf :: ZonedTime
+        , payloadOf   :: HashMap String String
         }
     deriving (Show)
 

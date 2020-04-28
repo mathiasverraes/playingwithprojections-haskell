@@ -26,8 +26,8 @@ library:
   source-dirs: src
   dependencies:
   - aeson -any
-  - text -any
-  - mtl -any
+  - unordered-containers -any
+  - time -any
 
 executables:
   playingwithprojections-exe:
