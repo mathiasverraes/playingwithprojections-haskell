@@ -1,6 +1,6 @@
 {-# LANGUAGE MultiWayIf #-}
 
-module MostPopularQuizzes
+module Projections.MostPopularQuizzes
     ( mostPopularQuizzes
     ) where
 

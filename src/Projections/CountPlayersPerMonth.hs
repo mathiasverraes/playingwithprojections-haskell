@@ -1,4 +1,4 @@
-module CountPlayersPerMonth
+module Projections.CountPlayersPerMonth
     ( countPlayersPerMonth
     ) where
 

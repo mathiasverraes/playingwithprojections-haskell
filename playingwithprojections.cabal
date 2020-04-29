@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 19c57c37fe203c77528d8a985ccb863f6081e61367b3073deeba49f03ec4c35c
+-- hash: 10c35a4f18320d94078c4d9ced455a827c21b88a4e4e8a77455e55b09c740600
 
 name:           playingwithprojections
 version:        0.1.0.0
@@ -27,13 +27,13 @@ source-repository head
 
 library
   exposed-modules:
-      CountEvents
-      CountPlayers
-      CountPlayersPerMonth
       DomainEvent
       Event
       EventStore
-      MostPopularQuizzes
+      Projections.CountEvents
+      Projections.CountPlayers
+      Projections.CountPlayersPerMonth
+      Projections.MostPopularQuizzes
       StartHere
   other-modules:
       Paths_playingwithprojections

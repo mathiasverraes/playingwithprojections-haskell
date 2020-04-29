@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module CountPlayers
+module Projections.CountPlayers
     ( countPlayers
     ) where
 

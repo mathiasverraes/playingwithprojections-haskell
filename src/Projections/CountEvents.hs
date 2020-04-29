@@ -1,4 +1,4 @@
-module CountEvents
+module Projections.CountEvents
     ( countEvents
     ) where
 

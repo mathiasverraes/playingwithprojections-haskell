@@ -1,10 +1,10 @@
 module StartHere where
 
-import           CountEvents          (countEvents)
-import           CountPlayers         (countPlayers)
-import           CountPlayersPerMonth (countPlayersPerMonth)
 import           EventStore
-import           MostPopularQuizzes   (mostPopularQuizzes)
+import           Projections.CountEvents          (countEvents)
+import           Projections.CountPlayers         (countPlayers)
+import           Projections.CountPlayersPerMonth (countPlayersPerMonth)
+import           Projections.MostPopularQuizzes   (mostPopularQuizzes)
 
 go :: EventStore -> IO ()
 go eventStore = do
