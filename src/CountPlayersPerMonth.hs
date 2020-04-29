@@ -1,16 +1,18 @@
-module CountPlayersPerMonth where
+module CountPlayersPerMonth
+    ( countPlayersPerMonth
+    ) where
 
-
-import qualified Data.Map.Strict     as M
+import qualified Data.Map.Strict     as Map
 import           Data.Time
 import           Data.Time.LocalTime
 import           EventStore
 
-initState = M.empty
+countPlayersPerMonth =
+    Projection {initState = Map.empty, transform = id, step = step'}
 
-projection state event =
+step' state event =
     if typeOf event == "PlayerHasRegistered"
-        then M.alter incr month state
+        then Map.alter incr month state
         else state
   where
     incr Nothing  = Just 1

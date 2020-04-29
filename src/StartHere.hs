@@ -1,23 +1,18 @@
-module StartHere (go) where
+module StartHere where
 
-import qualified CountEvents          (initState, projection)
-import qualified CountPlayers         (initState, projection)
-import qualified CountPlayersPerMonth (initState, projection)
-import qualified MostPopularQuizzes (initState, projection, transform)
+import           CountEvents          (countEvents)
+import           CountPlayers         (countPlayers)
+import           CountPlayersPerMonth (countPlayersPerMonth)
 import           EventStore
+import           MostPopularQuizzes   (mostPopularQuizzes)
 
 go :: EventStore -> IO ()
 go eventStore = do
-
-    state <- replay eventStore CountEvents.initState CountEvents.projection
-    print state
-
-    state <- replay eventStore CountPlayers.initState CountPlayers.projection
-    print state
-
-    state <- replay eventStore CountPlayersPerMonth.initState CountPlayersPerMonth.projection
-    print state
-
-    state <- replay eventStore MostPopularQuizzes.initState MostPopularQuizzes.projection
-    print $ MostPopularQuizzes.transform state
-
+    result <- replay eventStore countEvents
+    print result
+    result <- replay eventStore countPlayers
+    print result
+    result <- replay eventStore countPlayersPerMonth
+    print result
+    result <- replay eventStore mostPopularQuizzes
+    print result

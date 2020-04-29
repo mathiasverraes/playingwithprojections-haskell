@@ -1,10 +1,12 @@
-module CountPlayers where
+module CountPlayers
+    ( countPlayers
+    ) where
 
 import           EventStore
 
-initState = 0
+countPlayers = Projection {initState = 0, transform = id, step = step'}
 
-projection state event =
+step' state event =
     if typeOf event == "PlayerHasRegistered"
         then state + 1
         else state

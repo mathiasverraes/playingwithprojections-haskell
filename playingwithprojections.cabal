@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4e0cd225828beddc5c14078dd32589e3c49e995662de892d5bbbf95de89c1695
+-- hash: d823d28a958f06de48b080b86abcba370e4633e2e13ddc7cb2e45cb4e7f16aa7
 
 name:           playingwithprojections
 version:        0.1.0.0
@@ -33,7 +33,6 @@ library
       Domain
       EventStore
       MostPopularQuizzes
-      QuizTitles
       StartHere
   other-modules:
       Paths_playingwithprojections

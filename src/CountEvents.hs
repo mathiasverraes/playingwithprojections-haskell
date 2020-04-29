@@ -1,4 +1,9 @@
-module CountEvents where
+module CountEvents
+    ( countEvents
+    ) where
 
-initState = 0
-projection state event = state + 1
+import           EventStore
+
+countEvents = Projection {initState = 0, step = step', transform = id}
+
+step' n event = n + 1
