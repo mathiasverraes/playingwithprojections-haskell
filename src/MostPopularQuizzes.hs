@@ -7,7 +7,6 @@ module MostPopularQuizzes
 import           Data.List
 import qualified Data.Map.Strict as M
 import           EventStore
-import           Flow
 
 mostPopularQuizzes =
     Projection
@@ -31,15 +30,16 @@ instance Show Quiz where
 
 step' :: M.Map String Quiz -> Event -> M.Map String Quiz
 step' state event =
-    if | typeOf event == "QuizWasCreated" -> M.insert getQuizId makeQuiz state
-       | typeOf event == "GameWasOpened" -> M.adjust incr getQuizId state
-       | otherwise -> state
+    case event |> event_type of
+        "QuizWasCreated" -> M.insert getQuizId makeQuiz state
+        "GameWasOpened"  -> M.adjust incr getQuizId state
+        _                -> state
   where
-    getQuizId = payloadOf event ! "quiz_id"
+    getQuizId = event |> payload |> quiz_id
     makeQuiz =
         Quiz
             { quizId = getQuizId
-            , quizTitle = payloadOf event ! "quiz_title"
+            , quizTitle = event |> payload |> quiz_title
             , popularity = 0
             }
 

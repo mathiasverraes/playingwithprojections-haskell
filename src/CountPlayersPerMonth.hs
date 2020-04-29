@@ -10,11 +10,10 @@ import           EventStore
 countPlayersPerMonth =
     Projection {initState = Map.empty, transform = id, step = step'}
 
-step' state event =
-    if typeOf event == "PlayerHasRegistered"
-        then Map.alter incr month state
-        else state
+step' state event = when (event |> payload)
   where
+    when PlayerHasRegistered {} = Map.alter incr month state
+    when _                      = state
     incr Nothing  = Just 1
     incr (Just x) = Just $ x + 1
-    month = formatTime defaultTimeLocale "%0Y-%m" (timestampOf event)
+    month = formatTime defaultTimeLocale "%0Y-%m" (event |> timestamp)

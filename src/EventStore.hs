@@ -1,23 +1,15 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module EventStore
     ( module EventStore
-    , (!)
+   , module DomainEvent
+   , module Event
+    , (|>)
     ) where
 
-import           Data.Aeson
-import           Data.HashMap.Strict (HashMap, (!))
+import           Data.Aeson          (decodeFileStrict)
 import           Data.Time.LocalTime
+import           DomainEvent
+import           Event
 import           Flow
-
-data Event =
-    Event
-        { idOf        :: String
-        , typeOf      :: String
-        , timestampOf :: ZonedTime
-        , payloadOf   :: HashMap String String
-        }
-    deriving (Show)
 
 newtype EventStore =
     EventStore
@@ -25,21 +17,15 @@ newtype EventStore =
         }
     deriving (Show, Eq)
 
-stream :: EventStore -> IO [Event]
-stream es = concat <$> decodeFileStrict (file es)
-
-instance FromJSON Event where
-    parseJSON (Object x) =
-        Event <$> x .: "id" <*> x .: "type" <*> x .: "timestamp" <*>
-        x .: "payload"
-    parseJSON _ = fail "Expected an Object"
-
 data Projection a b =
     Projection
         { initState :: a
         , step      :: a -> Event -> a
         , transform :: a -> b
         }
+
+stream :: EventStore -> IO [Event]
+stream es = concat <$> decodeFileStrict (file es)
 
 replay :: EventStore -> Projection a b -> IO b
 replay eventStore projection = do

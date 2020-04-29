@@ -17,14 +17,15 @@ stack repl
 > cmd ["path/to/basic.json"]
 ```
 
-## Challenges
+## Tips
 
-Tip: this is how you get values from events:
+This is how you get values from events:
 
 ```
-idOf event                      :: String
-typeOf event                    :: String
-timestampOf event               :: ZonedTime
-payloadOf event                 :: HashMap String String
-payloadOf event ! "quiz_title"  :: String
+event |> event_id              -- String
+event |> event_type            -- String
+event |> timestamp             -- ZonedTime
+event |> payload |> quiz_title -- String
 ```
+
+Note: `x |> f = f x`, it's from the [Flow](https://github.com/tfausak/flow#cheat-sheet) library.
