@@ -29,6 +29,7 @@ library:
   - unordered-containers -any
   - time -any
   - containers -any
+  - flow -any
 
 executables:
   playingwithprojections-exe:
