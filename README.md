@@ -29,3 +29,7 @@ event |> payload |> quiz_title -- String
 ```
 
 Note: `x |> f = f x`, it's from the [Flow](https://github.com/tfausak/flow#cheat-sheet) library.
+
+## Domain
+
+![Process](domain/Process.png)

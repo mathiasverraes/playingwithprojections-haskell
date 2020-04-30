@@ -1,0 +1,42 @@
+@startuml
+
+skinparam activity {
+    BorderColor black
+    BorderThickness 0.3
+    backgroundColor Orange
+    DiamondBackgroundColor transparent
+}
+
+start
+
+:PlayerHasRegistered;
+
+if () then
+    :QuizWasCreated;
+    repeat :QuestionWasAddedToQuiz;
+    repeat while ()
+    :QuizWasPublished;
+else ()
+endif
+
+:GameWasOpened;
+if () then
+    :GameWasCancelled;
+else ()
+    repeat :PlayerJoinedGame;
+    repeat while ()
+    :GameWasStarted;
+    repeat :QuestionWasAsked;
+        if () then
+            :AnswerWasGiven;
+        else ()
+            :TimerHasExpired;
+        endif
+        :QuestionWasCompleted;
+     repeat while ()
+    :GameWasFinished;
+endif
+
+stop
+
+@enduml
