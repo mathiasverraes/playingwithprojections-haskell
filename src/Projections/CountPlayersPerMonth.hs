@@ -8,7 +8,7 @@ import           Data.Time.LocalTime
 import           EventStore
 
 countPlayersPerMonth =
-    Projection {initState = Map.empty, transform = id, step = step'}
+    Projection {initState = Map.empty, step = step', transform = id}
 
 step' state event = when (event |> payload)
   where

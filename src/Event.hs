@@ -15,12 +15,16 @@ import           DomainEvent
 
 data Event =
     Event
-        { event_id   :: String
-        , event_type :: String
+        { event_id   :: EventId
+        , event_type :: EventType
         , timestamp  :: ZonedTime
         , payload    :: DomainEvent
         }
     deriving (Show)
+
+type EventId = String
+
+type EventType = String
 
 instance FromJSON Event where
     parseJSON =
@@ -41,7 +45,7 @@ parse p "QuestionAddedToQuiz" =
     p .: "question" <*>
     p .: "answer"
 parse p "QuizWasCreated" =
-    QuizWasCreated <$> p .: "quiz_title" <*> p .: "quiz_id" <*> p .: "owner_id"
+    QuizWasCreated <$> p .: "quiz_id" <*> p .: "quiz_title" <*> p .: "owner_id"
 parse p "GameWasOpened" =
     GameWasOpened <$> p .: "quiz_id" <*> p .: "game_id" <*> p .: "player_id"
 parse p "QuestionWasAsked" =

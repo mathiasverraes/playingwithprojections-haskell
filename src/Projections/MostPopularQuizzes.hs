@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 module Projections.MostPopularQuizzes
     ( mostPopularQuizzes
@@ -7,17 +7,16 @@ module Projections.MostPopularQuizzes
 import           Data.List
 import qualified Data.Map.Strict as M
 import           EventStore
+import           Text.Printf     (printf)
 
 mostPopularQuizzes =
-    Projection
-        { initState = M.empty :: M.Map String Quiz
-        , transform = transform'
-        , step = step'
-        }
+    Projection {initState = M.empty, step = step', transform = transform'}
+
+type State = M.Map QuizId Quiz
 
 data Quiz =
     Quiz
-        { quizId     :: String
+        { quizId     :: QuizId
         , quizTitle  :: String
         , popularity :: Int
         }
@@ -25,24 +24,19 @@ data Quiz =
 
 incr quiz = quiz {popularity = popularity quiz + 1}
 
-instance Show Quiz where
-    show quiz = show (popularity quiz) <> ": " <> quizTitle quiz
+format quiz = printf "%d: %s" (quiz |> popularity) (quiz |> quizTitle)
 
-step' :: M.Map String Quiz -> Event -> M.Map String Quiz
-step' state event =
-    case event |> event_type of
-        "QuizWasCreated" -> M.insert getQuizId makeQuiz state
-        "GameWasOpened"  -> M.adjust incr getQuizId state
-        _                -> state
+step' :: State -> Event -> State
+step' state event = when (event |> payload)
   where
-    getQuizId = event |> payload |> quiz_id
-    makeQuiz =
-        Quiz
-            { quizId = getQuizId
-            , quizTitle = event |> payload |> quiz_title
-            , popularity = 0
-            }
+    when QuizWasCreated {quiz_id, quiz_title} =
+        M.insert quiz_id (Quiz quiz_id quiz_title 0) state
+    when GameWasOpened {quiz_id} = M.adjust incr quiz_id state
+    when _ = state
 
-transform' :: M.Map String Quiz -> [Quiz]
+transform' :: State -> [Quiz]
 transform' state =
-    state |> M.toList |> fmap snd |> sortOn popularity |> reverse |> take 15
+    state |> M.toList |> fmap snd |> sortOn popularity |> reverse |> take 10
+
+instance Show Quiz where
+    show = format

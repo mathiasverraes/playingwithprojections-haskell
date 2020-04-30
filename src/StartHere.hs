@@ -15,4 +15,4 @@ go eventStore = do
     result <- replay eventStore countPlayersPerMonth
     print result
     result <- replay eventStore mostPopularQuizzes
-    print result
+    mapM_ print result
