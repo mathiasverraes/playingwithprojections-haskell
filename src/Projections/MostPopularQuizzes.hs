@@ -7,16 +7,15 @@ module Projections.MostPopularQuizzes
 import           Data.List
 import qualified Data.Map.Strict as Map
 import           EventStore
+import           Flow
 import           Text.Printf     (printf)
 
 mostPopularQuizzes =
     Projection
-        { initState = Map.empty
+        { initState = emptyQuizzes
         , step = trackPopularity
         , transform = tenMostPopular
         }
-
-type State = Map.Map QuizId Quiz
 
 data Quiz =
     Quiz
@@ -26,21 +25,34 @@ data Quiz =
         }
     deriving (Eq)
 
-incr quiz = quiz {popularity = popularity quiz + 1}
+type Quizzes = Map.Map QuizId Quiz
 
-format quiz = printf "%d: %s" (quiz |> popularity) (quiz |> quizTitle)
+emptyQuizzes :: Quizzes
+emptyQuizzes = Map.empty
 
-trackPopularity :: State -> Event -> State
-trackPopularity state event = when (event |> payload)
+addNewQuiz :: QuizId -> String -> Quizzes -> Quizzes
+addNewQuiz id title = Map.insert id (Quiz id title 0)
+
+incrementQuiz :: QuizId -> Quizzes -> Quizzes
+incrementQuiz = Map.adjust incr
+  where
+    incr quiz = quiz {popularity = popularity quiz + 1}
+
+trackPopularity :: Quizzes -> Event -> Quizzes
+trackPopularity quizzes event = when (event |> payload)
   where
     when QuizWasCreated {quiz_id, quiz_title} =
-        Map.insert quiz_id (Quiz quiz_id quiz_title 0) state
-    when GameWasOpened {quiz_id} = Map.adjust incr quiz_id state
-    when _ = state
+        quizzes |> addNewQuiz quiz_id quiz_title
+    when GameWasOpened {quiz_id} = quizzes |> incrementQuiz quiz_id
+    when _ = quizzes
 
-tenMostPopular :: State -> [Quiz]
-tenMostPopular state =
-    state |> Map.toList |> fmap snd |> sortOn popularity |> reverse |> take 10
+tenMostPopular :: Quizzes -> [Quiz]
+tenMostPopular quizzes =
+    quizzes |> fetchAll |> sortOn popularity |> reverse |> take 10
+  where
+    fetchAll = Map.toList .> fmap snd
 
 instance Show Quiz where
     show = format
+      where
+        format quiz = printf "%d: %s" (quiz |> popularity) (quiz |> quizTitle)
