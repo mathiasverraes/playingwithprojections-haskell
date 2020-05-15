@@ -1,8 +1,14 @@
 
+
         *** Expressive Projections ***
+                    DDDDD
 
         Mathias Verraes     @mathiasverraes
         Eric Evans          @ericevans0
         Romeu Moura         @malk_zameth
 
-        training.dddeurope.com
+        Kata created by
+        Thomas Coopman      @tcoopman
+        Michel Grootjans    @michelgrootjans
+
+        Good stuff:         training.dddeurope.com
