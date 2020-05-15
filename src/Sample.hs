@@ -1,4 +1,4 @@
-module StartHere where
+module Sample where
 
 import           EventStore
 import           Projections.CountEvents          (countEvents)

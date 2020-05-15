@@ -14,24 +14,24 @@ mostPopularQuizzes =
     Projection
         { initState = emptyQuizzes
         , step = trackPopularity
-        , transform = tenMostPopular
+        , query = tenMostPopular
         }
 
-data Quiz =
-    Quiz
+data QuizPopularity =
+    QuizPopularity
         { quizId     :: QuizId
         , quizTitle  :: String
         , popularity :: Int
         }
     deriving (Eq)
 
-type Quizzes = Map.Map QuizId Quiz
+type Quizzes = Map.Map QuizId QuizPopularity
 
 emptyQuizzes :: Quizzes
 emptyQuizzes = Map.empty
 
 addNewQuiz :: QuizId -> String -> Quizzes -> Quizzes
-addNewQuiz id title = Map.insert id (Quiz id title 0)
+addNewQuiz id title = Map.insert id (QuizPopularity id title 0)
 
 incrementQuiz :: QuizId -> Quizzes -> Quizzes
 incrementQuiz = Map.adjust incr
@@ -46,13 +46,13 @@ trackPopularity quizzes event = when (event |> payload)
     when GameWasOpened {quiz_id} = quizzes |> incrementQuiz quiz_id
     when _ = quizzes
 
-tenMostPopular :: Quizzes -> [Quiz]
+tenMostPopular :: Quizzes -> [QuizPopularity]
 tenMostPopular quizzes =
     quizzes |> fetchAll |> sortOn popularity |> reverse |> take 10
   where
     fetchAll = Map.toList .> fmap snd
 
-instance Show Quiz where
+instance Show QuizPopularity where
     show = format
       where
         format quiz = printf "%d: %s" (quiz |> popularity) (quiz |> quizTitle)

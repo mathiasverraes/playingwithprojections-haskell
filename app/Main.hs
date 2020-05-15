@@ -1,7 +1,7 @@
 module Main where
 
 import           EventStore
-import           StartHere
+import           Sample
 import           System.Environment
 import           System.Exit
 
