@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f007da1a075a43477437f1a5050dc58b240aaefd6a7715c903135455f4586d09
+-- hash: a2610c2ee35e764fdf81e1c54397abaa495db014d35364c09c3d000973c33066
 
 name:           playingwithprojections
 version:        0.1.0.0
@@ -34,7 +34,6 @@ library
       Projections.CountPlayers
       Projections.CountPlayersPerMonth
       Projections.MostPopularQuizzes
-      Projections.MostPopularQuizzesSolved
       Sample
   other-modules:
       Paths_playingwithprojections
