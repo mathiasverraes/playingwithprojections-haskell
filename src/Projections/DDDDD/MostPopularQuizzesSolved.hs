@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Projections.MostPopularQuizzesSolved
+module Projections.MostPopularQuizzes
     ( mostPopularQuizzes
     ) where
 
@@ -11,12 +11,18 @@ import           Flow
 import           Text.Printf     (printf)
 
 mostPopularQuizzes =
-    Projection
-        { initState = emptyQuizzes
-        , step = trackPopularity
-        , transform = tenMostPopular
-        }
+    Projection {startWith = emptyQuizPops, then' = trackPopularity, andFinally = getTenMostPopular}
 
+trackPopularity :: QuizPops -> Event -> QuizPops
+trackPopularity quizPops event = when (event |> payload)
+  where
+    when QuizWasCreated {quiz_id, quiz_title} =
+        quizPops |> startTracking quiz_id (newQuizPop quiz_id quiz_title)
+    when GameWasOpened {quiz_id} =
+        quizPops |> incrementPopularity quiz_id
+    when _ = quizPops
+
+-- Entity
 data QuizPopularity =
     QuizPopularity
         { quizId     :: QuizId
@@ -24,35 +30,30 @@ data QuizPopularity =
         , popularity :: Int
         }
     deriving (Eq)
+newQuizPop :: QuizId -> String -> QuizPopularity
+newQuizPop quiz_id quiz_title =
+    QuizPopularity {quizId = quiz_id, quizTitle = quiz_title, popularity = 0}
 
-type Quizzes = Map.Map QuizId QuizPopularity
+-- Repository
+type QuizPops = Map.Map QuizId QuizPopularity
 
-emptyQuizzes :: Quizzes
-emptyQuizzes = Map.empty
+emptyQuizPops :: QuizPops
+emptyQuizPops = Map.empty
 
-addNewQuiz :: QuizId -> String -> Quizzes -> Quizzes
-addNewQuiz id title = Map.insert id (QuizPopularity id title 0)
+startTracking :: QuizId -> QuizPopularity -> QuizPops -> QuizPops
+startTracking = Map.insert
 
-incrementQuiz :: QuizId -> Quizzes -> Quizzes
-incrementQuiz = Map.adjust incr
+incrementPopularity :: QuizId -> QuizPops -> QuizPops
+incrementPopularity =
+    Map.adjust (\quiz -> quiz {popularity = popularity quiz + 1})
+
+getTenMostPopular :: QuizPops -> [QuizPopularity]
+getTenMostPopular quizzes =
+    selectAllFrom quizzes  |> sortOn (desc . popularity) |> limit 10
   where
-    incr quiz = quiz {popularity = popularity quiz + 1}
-
-trackPopularity :: Quizzes -> Event -> Quizzes
-trackPopularity quizzes event = when (event |> payload)
-  where
-    when QuizWasCreated {quiz_id, quiz_title} =
-        quizzes |> addNewQuiz quiz_id quiz_title
-    when GameWasOpened {quiz_id} = quizzes |> incrementQuiz quiz_id
-    when _ = quizzes
-
-tenMostPopular :: Quizzes -> [QuizPopularity]
-tenMostPopular quizzes =
-    quizzes |> fetchAll |> sortOn (negate . popularity) |> take 10
-  where
-    fetchAll = Map.toList .> fmap snd
+    selectAllFrom quizzes = quizzes |> Map.toList |> fmap snd
+    limit = take
+    desc = negate
 
 instance Show QuizPopularity where
-    show = format
-      where
-        format quiz = printf "%d: %s" (quiz |> popularity) (quiz |> quizTitle)
+    show quiz = printf "%d: %s" (quiz |> popularity) (quiz |> quizTitle)
