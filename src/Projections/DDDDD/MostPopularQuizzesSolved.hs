@@ -14,7 +14,7 @@ mostPopularQuizzes =
     Projection
         { initState = emptyQuizzes
         , step = trackPopularity
-        , query = tenMostPopular
+        , transform = tenMostPopular
         }
 
 data QuizPopularity =
@@ -48,7 +48,7 @@ trackPopularity quizzes event = when (event |> payload)
 
 tenMostPopular :: Quizzes -> [QuizPopularity]
 tenMostPopular quizzes =
-    quizzes |> fetchAll |> sortOn popularity |> reverse |> take 10
+    quizzes |> fetchAll |> sortOn (negate . popularity) |> take 10
   where
     fetchAll = Map.toList .> fmap snd
 

@@ -4,9 +4,8 @@ module Projections.CountPlayers
 
 import           EventStore
 
-countPlayers = Projection {initState = 0, step = step', query = id}
+countPlayers = Projection {initState = 0, step = step', transform = id}
 
-step' state event = when (event |> payload)
+step' state event = apply (event |> payload)
   where
-    when PlayerHasRegistered {} = state + 1
-    when _                      = state
+    apply PlayerHasRegistered {} = undefined

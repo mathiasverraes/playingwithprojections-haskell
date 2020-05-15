@@ -12,4 +12,3 @@ go' :: EventStore -> IO ()
 go' eventStore = do
     result <- replay eventStore countEvents
     print result
-    

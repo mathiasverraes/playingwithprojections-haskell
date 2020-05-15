@@ -4,6 +4,6 @@ module Projections.CountEvents
 
 import           EventStore
 
-countEvents = Projection {initState = 0, step = f, query = id}
+countEvents = Projection {initState = 0, step = f, transform = id}
 
-f init _ = init + 1
+f _ _ = undefined

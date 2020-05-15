@@ -8,7 +8,7 @@ import           Data.Time.LocalTime
 import           EventStore
 
 countPlayersPerMonth =
-    Projection {initState = Map.empty, step = step', query = id}
+    Projection {initState = Map.empty, step = step', transform = id}
 
 step' state event = when (event |> payload)
   where
@@ -16,4 +16,4 @@ step' state event = when (event |> payload)
     when _                      = state
     incr Nothing  = Just 1
     incr (Just x) = Just $ x + 1
-    month = formatTime defaultTimeLocale "%0Y-%m" (event |> timestamp)
+    month = formatTime defaultTimeLocale "%B" (event |> timestamp)

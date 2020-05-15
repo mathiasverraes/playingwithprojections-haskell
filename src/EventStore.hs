@@ -22,7 +22,7 @@ data Projection a b =
     Projection
         { initState :: a
         , step      :: a -> Event -> a
-        , query     :: a -> b
+        , transform :: a -> b
         }
 
 stream :: EventStore -> IO [Event]
@@ -32,4 +32,4 @@ replay :: EventStore -> Projection a b -> IO b
 replay eventStore projection = do
     events <- stream eventStore
     let state = foldl' (projection |> step) (projection |> initState) events
-    return $ (projection |> query) state
+    return $ (projection |> transform) state

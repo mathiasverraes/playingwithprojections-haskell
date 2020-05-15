@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Projections.MostPopularQuizzes
+module Projections.MostPopularQuizzesOrig
     ( mostPopularQuizzes
     ) where
 
