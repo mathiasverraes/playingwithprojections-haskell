@@ -1,4 +1,4 @@
-module Projections.CountPlayersPerMonth
+module Solutions.CountPlayersPerMonth
     ( countPlayersPerMonth
     ) where
 
@@ -8,7 +8,7 @@ import           Data.Time.LocalTime
 import           EventStore
 
 countPlayersPerMonth =
-    Projection {initState = Map.empty, step = step', transform = id}
+    Projection {initState = Map.empty, step = step', query = id}
 
 step' state event = when (event |> payload)
   where

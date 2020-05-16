@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Projections.MostPopularQuizzes
+module Solutions.MostPopularQuizzes
     ( mostPopularQuizzes
     ) where
 
@@ -11,7 +11,7 @@ import           Flow
 import           Text.Printf     (printf)
 
 mostPopularQuizzes =
-    Projection {initState = Map.empty, step = step', transform = transform'}
+    Projection {initState = Map.empty, step = step', query = transform'}
 
 data Quiz =
     Quiz
