@@ -30,6 +30,10 @@ library:
   - time -any
   - containers -any
   - flow -any
+  - json-stream
+  - streaming
+  - streaming-bytestring
+  - streaming-utils
 
 executables:
   playingwithprojections-exe:

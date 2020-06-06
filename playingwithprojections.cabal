@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7d2f0dea31952c0294905cb769d556d0d6d81fa2f1198a9caea3a9aaecdad2dd
+-- hash: ab04cb73ba2da1a0b2921c17f0fdfc619b576e48f1c10e7d8e2ec50075250984
 
 name:           playingwithprojections
 version:        0.1.0.0
