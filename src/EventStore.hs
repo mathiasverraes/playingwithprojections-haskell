@@ -5,12 +5,16 @@ module EventStore
     , (|>)
     ) where
 
-import           Data.Aeson          (decodeFileStrict)
-import           Data.List           (foldl')
-import           Data.Time.LocalTime
+import qualified Data.ByteString.Streaming as ST
+import           Data.ByteString.Streaming.Aeson (streamParse)
+import           Data.ByteString.Streaming.HTTP  (runResourceT)
+import           Data.Function                   ((&))
+import           Data.JsonStream.Parser          (arrayOf, value)
 import           DomainEvent
 import           Event
 import           Flow
+import           Streaming
+import qualified Streaming.Prelude as S
 
 newtype EventStore =
     EventStore
@@ -25,11 +29,11 @@ data Projection a b =
         , query :: a -> b
         }
 
-stream :: EventStore -> IO [Event]
-stream es = concat <$> decodeFileStrict (file es)
-
 replay :: EventStore -> Projection a b -> IO b
-replay eventStore projection = do
-    events <- stream eventStore
-    let state = foldl' (projection |> step) (projection |> initState) events
-    return $ (projection |> query) state
+replay eventStore projection =
+  runResourceT $
+    ST.readFile
+      (eventStore |> file)
+      & streamParse (arrayOf value)
+      & void
+      & S.fold_ (projection |> step) (projection |> initState) (projection |> query)
